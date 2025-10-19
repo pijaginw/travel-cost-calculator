@@ -1,0 +1,62 @@
+{#
+This template renders the form for creating a new trip.
+It extends a base layout to maintain a consistent look and feel across the application.
+#}
+{% extends 'base.html.twig' %}
+
+{# Set the title for this specific page #}
+{% block title %}Create a New Trip{% endblock %}
+
+{# Define the main content block for the page #}
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        {# Main heading for the form #}
+                        <h1 class="h4 mb-0">Create a New Trip</h1>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text text-muted mb-4">
+                            Start by giving your trip a name and selecting the currency you'll be using for expenses.
+                        </p>
+
+                        {#
+                        Starts the form rendering.
+                        'novalidate' disables browser-based validation to rely on Symfony's server-side validation.
+                        #}
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                        {#
+                        Render the form rows.
+                        form_row(form.fieldName) is a powerful Twig function that renders the label,
+                        the input widget, and any validation errors for a specific field.
+                        #}
+                        <div class="mb-3">
+                            {{ form_row(form.tripName) }}
+                        </div>
+                        <div class="mb-4">
+                            {{ form_row(form.tripCurrency) }}
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            {# A link to go back to the dashboard, providing clear navigation #}
+                            <a href="{{ path('app_index') }}" class="btn btn-secondary me-md-2 mb-2 mb-md-0">
+                                Cancel
+                            </a>
+
+                            {# The submit button for the form #}
+                            <button type="submit" class="btn btn-primary">
+                                Create Trip
+                            </button>
+                        </div>
+
+                        {# Renders the closing </form> tag and any hidden fields (like the CSRF token) #}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
