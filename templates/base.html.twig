@@ -12,6 +12,17 @@
         {% endblock %}
     </head>
     <body>
+        {% if not app.user %}
+            <div class="mb-3">
+                To use the Travel Cost Calculator app, please <a href="{{ path('app_login') }}">login</a>.
+            </div>
+        {% endif %}
         {% block body %}{% endblock %}
+        {% if app.user %}
+            <div class="mb-3">
+                You are logged in as {{ app.user.userIdentifier }}
+                <a href="{{ path('app_logout') }}">Logout</a>
+            </div>
+        {% endif %}
     </body>
 </html>
