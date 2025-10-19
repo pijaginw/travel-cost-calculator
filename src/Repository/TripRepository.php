@@ -18,9 +18,8 @@ class TripRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find all trips for a specific user
+     * Find all trips for a specific user.
      *
-     * @param User $user
      * @return Trip[]
      */
     public function findByUser(User $user): array
@@ -34,11 +33,7 @@ class TripRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find a trip by name for a specific user
-     *
-     * @param User $user
-     * @param string $tripName
-     * @return Trip|null
+     * Find a trip by name for a specific user.
      */
     public function findOneByUserAndName(User $user, string $tripName): ?Trip
     {
@@ -52,11 +47,7 @@ class TripRepository extends ServiceEntityRepository
     }
 
     /**
-     * Save a trip entity
-     *
-     * @param Trip $trip
-     * @param bool $flush
-     * @return void
+     * Save a trip entity.
      */
     public function save(Trip $trip, bool $flush = false): void
     {
@@ -68,11 +59,7 @@ class TripRepository extends ServiceEntityRepository
     }
 
     /**
-     * Remove a trip entity
-     *
-     * @param Trip $trip
-     * @param bool $flush
-     * @return void
+     * Remove a trip entity.
      */
     public function remove(Trip $trip, bool $flush = false): void
     {

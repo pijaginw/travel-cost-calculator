@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserMonthlyLimitRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -18,7 +19,7 @@ class UserMonthlyLimit
 
     #[ORM\Id]
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $usageMonth = null;
+    private ?DateTimeImmutable $usageMonth = null;
 
     #[ORM\Column]
     #[Assert\PositiveOrZero]
@@ -32,17 +33,19 @@ class UserMonthlyLimit
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
         return $this;
     }
 
-    public function getUsageMonth(): ?\DateTimeImmutable
+    public function getUsageMonth(): ?DateTimeImmutable
     {
         return $this->usageMonth;
     }
 
-    public function setUsageMonth(\DateTimeImmutable $usageMonth): static
+    public function setUsageMonth(DateTimeImmutable $usageMonth): static
     {
         $this->usageMonth = $usageMonth;
+
         return $this;
     }
 
@@ -54,6 +57,7 @@ class UserMonthlyLimit
     public function setUploadCount(int $uploadCount): static
     {
         $this->uploadCount = $uploadCount;
+
         return $this;
     }
 }

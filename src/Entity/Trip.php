@@ -57,6 +57,7 @@ class Trip
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
         return $this;
     }
 
@@ -68,6 +69,7 @@ class Trip
     public function setTripName(string $tripName): static
     {
         $this->tripName = $tripName;
+
         return $this;
     }
 
@@ -79,6 +81,7 @@ class Trip
     public function setTripCurrency(string $tripCurrency): static
     {
         $this->tripCurrency = $tripCurrency;
+
         return $this;
     }
 

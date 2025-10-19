@@ -20,11 +20,8 @@ class UserMonthlyLimitRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find or create a monthly limit record for a user and month
+     * Find or create a monthly limit record for a user and month.
      *
-     * @param User $user
-     * @param DateTimeImmutable $month
-     * @return UserMonthlyLimit
      * @throws Exception
      */
     public function findOrCreate(User $user, DateTimeImmutable $month): UserMonthlyLimit
@@ -45,11 +42,8 @@ class UserMonthlyLimitRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find a monthly limit for a specific user and month
+     * Find a monthly limit for a specific user and month.
      *
-     * @param User $user
-     * @param DateTimeImmutable $month
-     * @return UserMonthlyLimit|null
      * @throws Exception
      */
     public function findOneByUserAndMonth(User $user, DateTimeImmutable $month): ?UserMonthlyLimit
@@ -67,9 +61,8 @@ class UserMonthlyLimitRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find all monthly limits for a specific user
+     * Find all monthly limits for a specific user.
      *
-     * @param User $user
      * @return UserMonthlyLimit[]
      */
     public function findByUser(User $user): array
@@ -83,10 +76,8 @@ class UserMonthlyLimitRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get the current month's upload count for a user
+     * Get the current month's upload count for a user.
      *
-     * @param User $user
-     * @return int
      * @throws Exception
      */
     public function getCurrentMonthUploadCount(User $user): int
@@ -99,12 +90,8 @@ class UserMonthlyLimitRepository extends ServiceEntityRepository
     }
 
     /**
-     * Increment upload count for a user in a specific month
+     * Increment upload count for a user in a specific month.
      *
-     * @param User $user
-     * @param DateTimeImmutable $month
-     * @param int $increment
-     * @return UserMonthlyLimit
      * @throws Exception
      */
     public function incrementUploadCount(User $user, DateTimeImmutable $month, int $increment = 1): UserMonthlyLimit
@@ -118,11 +105,7 @@ class UserMonthlyLimitRepository extends ServiceEntityRepository
     }
 
     /**
-     * Save a monthly limit entity
-     *
-     * @param UserMonthlyLimit $monthlyLimit
-     * @param bool $flush
-     * @return void
+     * Save a monthly limit entity.
      */
     public function save(UserMonthlyLimit $monthlyLimit, bool $flush = false): void
     {
@@ -134,11 +117,7 @@ class UserMonthlyLimitRepository extends ServiceEntityRepository
     }
 
     /**
-     * Remove a monthly limit entity
-     *
-     * @param UserMonthlyLimit $monthlyLimit
-     * @param bool $flush
-     * @return void
+     * Remove a monthly limit entity.
      */
     public function remove(UserMonthlyLimit $monthlyLimit, bool $flush = false): void
     {

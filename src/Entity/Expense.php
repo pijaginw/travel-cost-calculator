@@ -45,6 +45,7 @@ class Expense
     public function setTrip(?Trip $trip): static
     {
         $this->trip = $trip;
+
         return $this;
     }
 
@@ -56,6 +57,7 @@ class Expense
     public function setAmount(string $amount): static
     {
         $this->amount = $amount;
+
         return $this;
     }
 
@@ -67,6 +69,7 @@ class Expense
     public function setCategory(ExpenseCategory $category): static
     {
         $this->category = $category;
+
         return $this;
     }
 }

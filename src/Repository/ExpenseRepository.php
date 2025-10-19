@@ -19,9 +19,8 @@ class ExpenseRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find all expenses for a specific trip
+     * Find all expenses for a specific trip.
      *
-     * @param Trip $trip
      * @return Expense[]
      */
     public function findByTrip(Trip $trip): array
@@ -35,10 +34,8 @@ class ExpenseRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find expenses for a trip filtered by category
+     * Find expenses for a trip filtered by category.
      *
-     * @param Trip $trip
-     * @param ExpenseCategory $category
      * @return Expense[]
      */
     public function findByTripAndCategory(Trip $trip, ExpenseCategory $category): array
@@ -54,10 +51,7 @@ class ExpenseRepository extends ServiceEntityRepository
     }
 
     /**
-     * Calculate total expenses for a trip
-     *
-     * @param Trip $trip
-     * @return string
+     * Calculate total expenses for a trip.
      */
     public function getTotalAmountForTrip(Trip $trip): string
     {
@@ -72,11 +66,7 @@ class ExpenseRepository extends ServiceEntityRepository
     }
 
     /**
-     * Calculate total expenses for a trip by category
-     *
-     * @param Trip $trip
-     * @param ExpenseCategory $category
-     * @return string
+     * Calculate total expenses for a trip by category.
      */
     public function getTotalAmountForTripByCategory(Trip $trip, ExpenseCategory $category): string
     {
@@ -93,10 +83,7 @@ class ExpenseRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get expense count for a trip
-     *
-     * @param Trip $trip
-     * @return int
+     * Get expense count for a trip.
      */
     public function countByTrip(Trip $trip): int
     {
@@ -109,11 +96,7 @@ class ExpenseRepository extends ServiceEntityRepository
     }
 
     /**
-     * Save an expense entity
-     *
-     * @param Expense $expense
-     * @param bool $flush
-     * @return void
+     * Save an expense entity.
      */
     public function save(Expense $expense, bool $flush = false): void
     {
@@ -125,11 +108,7 @@ class ExpenseRepository extends ServiceEntityRepository
     }
 
     /**
-     * Remove an expense entity
-     *
-     * @param Expense $expense
-     * @param bool $flush
-     * @return void
+     * Remove an expense entity.
      */
     public function remove(Expense $expense, bool $flush = false): void
     {

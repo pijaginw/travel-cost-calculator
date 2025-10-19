@@ -76,8 +76,8 @@
         "symfony/polyfill-php82": "*"
     },
     "scripts": {
-        "cs-check": "php-cs-fixer fix --dry-run --diff",
-        "cs-fix": "php-cs-fixer fix",
+        "cs-check": "php-cs-fixer fix --dry-run --diff --allow-risky=yes",
+        "cs-fix": "php-cs-fixer fix --diff --allow-risky=yes",
         "stan": "phpstan analyse",
         "auto-scripts": {
             "cache:clear": "symfony-cmd",

@@ -34,10 +34,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * Find a user by email address
-     *
-     * @param string $email
-     * @return User|null
+     * Find a user by email address.
      */
     public function findOneByEmail(string $email): ?User
     {
@@ -49,11 +46,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * Save a user entity
-     *
-     * @param User $user
-     * @param bool $flush
-     * @return void
+     * Save a user entity.
      */
     public function save(User $user, bool $flush = false): void
     {
@@ -65,11 +58,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * Remove a user entity
-     *
-     * @param User $user
-     * @param bool $flush
-     * @return void
+     * Remove a user entity.
      */
     public function remove(User $user, bool $flush = false): void
     {
