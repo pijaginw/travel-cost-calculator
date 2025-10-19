@@ -46,7 +46,7 @@ class TripController extends AbstractController
 
             // US-005 Acceptance Criteria 6: Redirect to the trip dashboard upon successful creation.
             // @todo create dashboard route and redirect to it
-            return $this->redirectToRoute('app_index'); // Assuming 'app_dashboard' is the route name for the dashboard.
+            return $this->redirectToRoute('app_trip_list'); // Assuming 'app_dashboard' is the route name for the dashboard.
         }
 
         // If the request is a GET or the form is invalid, render the 'new trip' template.
