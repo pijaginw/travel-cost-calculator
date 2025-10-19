@@ -15,7 +15,7 @@ Solo leisure travelers often struggle with tracking their expenses accurately an
 ### 3.2. Trip Management
 - FR-004: Logged-in users must be able to create a new trip.
 - FR-005: A new trip requires a trip name and a single trip currency.
-- FR-006: The trip name must be unique for that user and have a maximum length of 50 characters.
+- FR-006: The trip name must be unique for that user and have a maximum length of 70 characters.
 - FR-007: Users must have a dashboard view ("My Trips") that displays a summary card for each trip they have created.
 - FR-008: Each trip card on the dashboard must display the Trip Name, the running Total Cost, and the number of individual expenses.
 - FR-009: Users must be able to click a trip card to navigate to a detailed Trip Summary page.
@@ -99,7 +99,7 @@ Solo leisure travelers often struggle with tracking their expenses accurately an
   - 2. The form contains an input field for "Trip Name" and a dropdown for "Trip Currency".
   - 3. The "Trip Name" field is mandatory.
   - 4. The "Trip Name" cannot be a duplicate of another trip name for the same user.
-  - 5. The "Trip Name" is limited to 50 characters.
+  - 5. The "Trip Name" is limited to 70 characters.
   - 6. Upon successful creation, the new trip appears on the "My Trips" dashboard.
 
 - ID: US-006
