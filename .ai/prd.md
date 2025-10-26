@@ -14,6 +14,7 @@ Solo leisure travelers often struggle with tracking their expenses accurately an
 
 ### 3.2. Trip Management
 - FR-004: Logged-in users must be able to create a new trip.
+- FR-024: Logged-in users must be able to see a list of all their trips and navigate to a detailed Trip Summary page for each trip.
 - FR-005: A new trip requires a trip name and a single trip currency.
 - FR-006: The trip name must be unique for that user and have a maximum length of 70 characters.
 - FR-007: Users must have a dashboard view ("My Trips") that displays a summary card for each trip they have created.
@@ -22,7 +23,7 @@ Solo leisure travelers often struggle with tracking their expenses accurately an
 - FR-010: The Trip Summary page must display the grand total cost and a list of all individual expenses.
 
 ### 3.3. Expense Management
-- FR-011: Users can upload one expense at a time in JPG or PNG format.
+- FR-011: Logged-in users can upload one expense at a time in JPG or PNG format.
 - FR-012: The system will use an integrated OpenAI service to process the uploaded image.
 - FR-013: The AI service will extract the total amount and suggest an expense category.
 - FR-014: The predefined categories are: Transportation, Accomodation, Food & Drink, Activities and Uncategorized.
@@ -111,7 +112,7 @@ Solo leisure travelers often struggle with tracking their expenses accurately an
 
 - ID: US-007
 - Title: Add an Expense Successfully
-- Description: As a user, I want to upload a receipt image for a specific trip and have the system automatically extract the details so I can add it to my total cost.
+- Description: As a logged-in user, I want to upload a receipt image for a specific trip and have the system automatically extract the details so I can add it to my total cost.
 - Acceptance Criteria:
   - 1. From a Trip Summary page, the user can initiate an expense upload.
   - 2. The user can select a JPG or PNG file from their device.
