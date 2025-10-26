@@ -3,69 +3,74 @@
 {% block title %}My Trips{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>My Trips</h1>
-                <a href="{{ path('app_trip_new') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Create New Trip
+    {# The main content wrapper, using the same layout max-width as other pages #}
+    <div class="app-content-panel">
+
+        <div class="data-header">
+            <h1>My Trips</h1>
+            <a href="{{ path('app_trip_new') }}" class="button button-primary">
+                {# Assuming you are using a simple icon library or text for "plus" #}
+                <span class="button-icon-text">+</span> Create New Trip
+            </a>
+        </div>
+
+        {# --- FLASH MESSAGES --- #}
+        {% for message in app.flashes('success') %}
+            <div class="flash-message flash-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="flash-message flash-error">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {# --- END FLASH MESSAGES --- #}
+
+        {% if trips is empty %}
+            <div class="data-empty-state">
+                <p class="data-empty-text">You don't have any trips yet.</p>
+                <a href="{{ path('app_trip_new') }}" class="button button-primary">
+                    Create your first trip
                 </a>
             </div>
-
-            {% for message in app.flashes('success') %}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-
-            {% for message in app.flashes('error') %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-
-            {% if trips is empty %}
-                <div class="alert alert-info">
-                    <p class="mb-0">You don't have any trips yet. <a href="{{ path('app_trip_new') }}">Create your first trip</a> to get started!</p>
-                </div>
-            {% else %}
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Currency</th>
-                                <th>Created</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for trip in trips %}
-                                <tr>
-                                    <td>{{ trip.tripName }}</td>
-                                    <td>{{ trip.tripCurrency }}</td>
-                                    <td>{{ trip.createdAt|date('Y-m-d H:i') }}</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-info" title="View">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-warning" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-danger" title="Delete" onclick="return confirm('Are you sure you want to delete this trip?')">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% endif %}
-        </div>
+        {% else %}
+            <div class="app-table-responsive">
+                <table class="app-table">
+                    <thead>
+                    <tr>
+                        <th class="table-col-main">Name</th>
+                        <th>Currency</th>
+                        <th class="table-col-date">Created</th>
+                        <th class="table-col-actions">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for trip in trips %}
+                        <tr>
+                            <td class="table-col-main">{{ trip.tripName }}</td>
+                            <td>{{ trip.tripCurrency }}</td>
+                            <td class="table-col-date">{{ trip.createdAt|date('Y-m-d') }}</td>
+                            <td class="table-col-actions">
+                                <div class="action-buttons-group">
+                                    {# NOTE: Replaced icon classes (i.e., 'bi bi-eye') with text/simple icons #}
+                                    <a href="#" class="button button-icon" title="View">
+                                        👁️
+                                    </a>
+                                    <a href="#" class="button button-icon" title="Edit">
+                                        ✏️
+                                    </a>
+                                    <a href="#" class="button button-icon button-icon-danger" title="Delete" onclick="return confirm('Are you sure you want to delete this trip?')">
+                                        🗑️
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
     </div>
-</div>
 {% endblock %}

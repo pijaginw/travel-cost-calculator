@@ -3,17 +3,51 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <div class="form-container">
+        <h1 class="form-title">Create Account</h1>
+        <p class="form-subtitle">Get started by creating your account.</p>
 
-    {{ form_errors(registrationForm) }}
+        {# Render any global form errors first #}
+        {{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+        {{ form_start(registrationForm, {'attr': {'novalidate': 'novalidate'}}) }}
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+        <div class="form-group">
+            {{ form_label(registrationForm.email) }}
+            {{ form_widget(registrationForm.email, {
+                'attr': {'class': 'form-control'}
+            }) }}
+            {# This will render any validation errors for *this* field #}
+            <div class="form-field-error">
+                {{ form_errors(registrationForm.email) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            {{ form_label(registrationForm.plainPassword, 'Password') }}
+            {{ form_widget(registrationForm.plainPassword, {
+                'attr': {'class': 'form-control'}
+            }) }}
+            <div class="form-field-error">
+                {{ form_errors(registrationForm.plainPassword) }}
+            </div>
+        </div>
+
+        {# You can add an "agree to terms" checkbox here if you have one #}
+        {#
+        <div class="form-group form-checkbox">
+            {{ form_widget(registrationForm.agreeTerms) }}
+            {{ form_label(registrationForm.agreeTerms) }}
+        </div>
+        #}
+
+        <div class="form-actions">
+            <button type="submit" class="button button-primary button-full-width">Register</button>
+        </div>
+        {{ form_end(registrationForm) }}
+
+        <div class="form-footer-link">
+            Already have an account? <a href="{{ path('app_login') }}">Log in</a>
+        </div>
+    </div>
 {% endblock %}

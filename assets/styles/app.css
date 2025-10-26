@@ -1,3 +1,425 @@
+/* 1. Root & Body Styling (New Palette) */
+:root {
+    --color-bg: #f5f5f7;       /* Light gray background (unchanged) */
+    --color-text: #1d1d1f;     /* Near-black text (unchanged) */
+    --color-text-secondary: #6e6e73; /* Gray for secondary text (unchanged) */
+
+    /* --- NEW ACCENT COLORS --- */
+    --color-accent: #108a74;     /* A vibrant, modern teal */
+    --color-accent-hover: #0d6e5d; /* A darker shade for hover */
+    /* --- END NEW --- */
+
+    --color-border: #d2d2d7;
+    --color-secondary-button-bg: #e9e9eb; /* Lighter gray for secondary buttons */
+    --color-secondary-button-hover: #dcdcdc;
+
+    --font-family-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --border-radius-main: 8px;
+}
+
 body {
-    background-color: skyblue;
+    font-family: var(--font-family-system);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 2. Layout Structure (Unchanged) */
+.app-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--color-border);
+    padding: 1rem 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.app-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1024px;
+    margin: 0 auto;
+}
+
+.app-content {
+    max-width: 1024px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: var(--border-radius-main);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.app-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+/* 3. Navigation & User Elements (Unchanged) */
+.nav-brand a {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Creates space between items */
+}
+
+.user-info {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+/* 4. Links & Buttons (Updated for new colors) */
+a {
+    color: var(--color-accent); /* Uses new teal color */
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--color-accent-hover); /* Uses new dark teal color */
+    text-decoration: underline;
+}
+
+.button {
+    display: inline-block;
+    padding: 0.6em 1.2em;
+    border: none;
+    border-radius: var(--border-radius-main);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.button:hover {
+    text-decoration: none;
+}
+
+.button.button-primary {
+    background-color: var(--color-accent); /* Uses new teal color */
+    color: #ffffff;
+}
+
+.button.button-primary:hover {
+    background-color: var(--color-accent-hover); /* Uses new dark teal color */
+}
+
+.button.button-secondary {
+    background-color: var(--color-secondary-button-bg); /* Uses new light gray */
+    color: var(--color-text);
+}
+
+.button.button-secondary:hover {
+    background-color: var(--color-secondary-button-hover); /* Uses new hover gray */
+}
+
+/* 5. Utility / Original classes (Unchanged) */
+.mb-3 {
+    margin-bottom: 1rem; /* Ensure this class still works if used in child templates */
+}
+
+/* 6. Form Styling */
+
+.form-container {
+    /* The .app-content block already provides the white card. */
+    /* This just centers the form elements within it. */
+    max-width: 420px;
+    margin: 0 auto; /* Center the form container */
+}
+
+.form-title {
+    font-size: 2rem; /* 32px */
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+}
+
+.form-subtitle {
+    text-align: center;
+    font-size: 1rem; /* 16px */
+    color: var(--color-text-secondary);
+    margin-top: 0;
+    margin-bottom: 2.5rem;
+}
+
+.form-error {
+    background-color: #fff6f6; /* Light red background */
+    color: #c53030; /* Dark red text */
+    border: 1px solid #fbb6b6; /* Red border */
+    border-radius: var(--border-radius-main);
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.5rem; /* Space between form groups */
+}
+
+.form-group label {
+    display: block; /* Makes the label sit on its own line */
+    font-weight: 500;
+    font-size: 0.875rem; /* 14px */
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-text);
+    background-color: #ffffff; /* White background */
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-main);
+    box-sizing: border-box; /* Important for 100% width + padding */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Style for when the input is focused */
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-accent); /* Use our teal accent color */
+    box-shadow: 0 0 0 3px rgba(16, 138, 116, 0.2); /* Faint glow in our accent color */
+}
+
+.form-actions {
+    margin-top: 2rem;
+}
+
+.button-full-width {
+    width: 100%;
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.form-footer-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem; /* Add some space above */
+    border-top: 1px solid var(--color-bg); /* Use the light-gray bg color for a subtle divider */
+    font-size: 0.9rem; /* 14px */
+    color: var(--color-text-secondary);
+}
+
+.form-footer-link a {
+    font-weight: 500;
+    color: var(--color-accent); /* Use the main teal color */
+    text-decoration: none;
+}
+
+.form-footer-link a:hover {
+    color: var(--color-accent-hover);
+    text-decoration: underline;
+}
+
+/* 8. Form Field Errors */
+
+.form-field-error {
+    color: #c53030; /* Dark red text */
+    font-size: 0.875rem; /* 14px */
+    margin-top: 0.25rem;
+}
+
+/* Optional: Style the input field itself when it's invalid */
+.form-control.is-invalid {
+    border-color: #c53030;
+}
+.form-control.is-invalid:focus {
+    border-color: #c53030;
+    box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.2);
+}
+
+/* 9. Form Actions Spaced (for forms with multiple buttons) */
+
+.form-actions-spaced {
+    display: flex;
+    justify-content: flex-end; /* Puts buttons on the right side */
+    gap: 1rem; /* Creates space between the Cancel and Create buttons */
+    margin-top: 2rem;
+}
+
+/* 10. Trip Management Specific Styling */
+
+/* Override the default max-width for forms like Trip Creation/Editing */
+.form-container-wide {
+    /* Set a slightly larger max-width for complex forms (e.g., 600px) */
+    max-width: 600px;
+    margin: 0 auto; /* Keep it centered */
+}
+
+/* Optional: Slight variation in the form title to differentiate */
+.form-container-wide .form-title {
+    font-size: 1.75rem; /* Slightly smaller title for utility pages */
+    font-weight: 600; /* Less bold */
+}
+
+/* 11. Dashboard/List View Styling */
+
+/* Use a full-width container for the list, overriding form-container */
+.app-content-panel {
+    max-width: 1200px; /* Wider view for data */
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: var(--border-radius-main);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.data-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.data-header h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+/* --- Flash Messages (Alerts) --- */
+.flash-message {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius-main);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.flash-success {
+    background-color: #e6ffec; /* Light green */
+    border: 1px solid #b7e4c7;
+    color: #0b6a2c; /* Dark green text */
+}
+
+.flash-error {
+    background-color: #fff0f0; /* Light red */
+    border: 1px solid #fbb6b6;
+    color: #c53030; /* Dark red text */
+}
+
+
+/* --- Empty State --- */
+.data-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--border-radius-main);
+    margin-top: 2rem;
+    background-color: var(--color-bg); /* Light gray background */
+}
+
+.data-empty-text {
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+
+/* --- Table Styling --- */
+.app-table {
+    width: 100%;
+    border-collapse: collapse; /* Remove double borders */
+    table-layout: fixed; /* Ensures column widths are respected */
+}
+
+.app-table thead th {
+    text-align: left;
+    padding: 0.8rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.app-table tbody tr {
+    border-bottom: 1px solid #f0f0f0; /* Very subtle row separation */
+    transition: background-color 0.15s ease;
+}
+
+.app-table tbody tr:hover {
+    background-color: #fafafa; /* Subtle hover effect */
+}
+
+.app-table tbody td {
+    padding: 1rem;
+    font-size: 1rem;
+    color: var(--color-text);
+    vertical-align: middle;
+}
+
+/* Specific Column Sizing and Styling */
+.table-col-main {
+    font-weight: 500; /* Bold for the main data point */
+    width: 40%;
+}
+
+.table-col-date {
+    width: 15%;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+.table-col-actions {
+    width: 15%;
+    text-align: right;
+}
+
+/* Action Buttons within the Table */
+.action-buttons-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.button-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 50%; /* Circular button */
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.button-icon:hover {
+    background-color: var(--color-border);
+    color: var(--color-text);
+}
+
+.button-icon-danger {
+    color: #c53030; /* Red for delete action */
+}
+
+.button-icon-danger:hover {
+    background-color: #fff0f0;
+    border-color: #c53030;
 }
