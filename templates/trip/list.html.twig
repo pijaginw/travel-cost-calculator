@@ -3,13 +3,11 @@
 {% block title %}My Trips{% endblock %}
 
 {% block body %}
-    {# The main content wrapper, using the same layout max-width as other pages #}
     <div class="app-content-panel">
 
         <div class="data-header">
             <h1>My Trips</h1>
             <a href="{{ path('app_trip_new') }}" class="button button-primary">
-                {# Assuming you are using a simple icon library or text for "plus" #}
                 <span class="button-icon-text">+</span> Create New Trip
             </a>
         </div>
@@ -54,12 +52,8 @@
                             <td class="table-col-date">{{ trip.createdAt|date('Y-m-d') }}</td>
                             <td class="table-col-actions">
                                 <div class="action-buttons-group">
-                                    {# NOTE: Replaced icon classes (i.e., 'bi bi-eye') with text/simple icons #}
-                                    <a href="#" class="button button-icon" title="View">
+                                    <a href="{{ path('app_trip_summary', {'id': trip.id}) }}" class="button button-icon" title="View">
                                         👁️
-                                    </a>
-                                    <a href="#" class="button button-icon" title="Edit">
-                                        ✏️
                                     </a>
                                     <a href="#" class="button button-icon button-icon-danger" title="Delete" onclick="return confirm('Are you sure you want to delete this trip?')">
                                         🗑️

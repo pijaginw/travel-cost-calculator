@@ -1,0 +1,74 @@
+{# templates/expense/add.html.twig - Final Cleaned and Styled Version #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Expense to {{ trip.tripName }}{% endblock %}
+
+{% block body %}
+    <div class="app-content">
+        {# Use form-container to center the form and apply max-width styling from app.css #}
+        <div class="form-container">
+
+            <h1 class="form-title">Add New Expense</h1>
+            {# Removed markdown ** from here #}
+            <p class="form-subtitle">to {{ trip.tripName }}</p>
+
+            {# Form for initial file upload (Step 1) #}
+            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+            {# --- 1. Upload Section --- #}
+            <h2 style="font-size: 1.25rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-accent);">1. Upload Receipt</h2>
+            <p class="text-muted mb-4">Upload a JPG or PNG receipt for automatic processing.</p>
+
+            <div class="form-group">
+                <label for="receipt_image">Receipt Image</label>
+                {# Using form-control for file input style #}
+                <input type="file" id="receipt_image" name="receipt_image" accept="image/jpeg,image/png" class="form-control">
+            </div>
+
+            <button type="submit" class="button button-primary button-full-width mt-3">
+                <i class="fa fa-upload"></i> Upload and Process
+            </button>
+
+
+            {% if form.vars.value.amount is not null or form.vars.value.category is not null %}
+                {# --- 2. Manual Entry Section --- #}
+                {# Clear visual separation with a divider #}
+                <div style="border-top: 1px solid var(--color-border); padding-top: 2.5rem; margin-top: 3rem;">
+
+                    <h2 style="font-size: 1.25rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-accent);">2. Manually Enter Details</h2>
+                    <p class="text-muted mb-4">The receipt image could not be processed, or you are entering the expense directly.</p>
+
+                    {# FR-017, US-009: Form fields for manual entry #}
+
+                    {# 1. Amount Field - Applied .form-control for better styling and increased spacing #}
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        {{ form_label(form.amount) }}
+                        {{ form_widget(form.amount, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.amount) }}
+                    </div>
+
+                    {# 2. Category Field - Applied .form-control for better styling and increased spacing #}
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        {{ form_label(form.category) }}
+                        {{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.category) }}
+                    </div>
+
+                    <div class="form-actions">
+                        {# CHANGE: Changed to button-primary to ensure it looks active and is not grayed out #}
+                        <button type="submit" class="button button-warning button-full-width">Save Manually</button>
+                    </div>
+                </div>
+            {% endif %}
+
+            {{ form_end(form) }}
+
+            <div class="form-footer-link">
+                <a href="{{ path('app_trip_summary', {'id': trip.id}) }}">
+                    ← Back to Trip Summary
+                </a>
+            </div>
+
+        </div> {# End form-container #}
+    </div>
+{% endblock %}

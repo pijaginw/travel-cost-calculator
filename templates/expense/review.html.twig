@@ -1,0 +1,30 @@
+{# templates/expense/review.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Review Expense for {{ trip.tripName }}{% endblock %}
+
+{% block body %}
+    <h1>Review Expense for **{{ trip.tripName }}**</h1>
+
+    <div class="alert alert-info">
+        The AI has extracted the following details. Please review and make any necessary corrections before saving.
+    </div>
+
+    {# Form pre-filled with AI data for review and correction (Step 2) #}
+    {{ form_start(form) }}
+
+    {# FR-016, US-008: Amount field is editable #}
+    {{ form_row(form.amount) }}
+
+    {# FR-016, US-008: Category is a dropdown menu #}
+    {{ form_row(form.category) }}
+
+    <button type="submit" class="btn btn-success mt-3">Confirm and Save Expense</button>
+
+    {{ form_end(form) }}
+
+    <hr>
+    <a href="{{ path('app_expense_add', {'id': trip.id}) }}" class="btn btn-secondary">
+        Cancel and Go Back to Upload
+    </a>
+{% endblock %}

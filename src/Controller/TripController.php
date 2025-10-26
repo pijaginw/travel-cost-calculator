@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Trip;
 use App\Entity\User;
 use App\Form\TripType;
+use App\Repository\TripRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +46,6 @@ class TripController extends AbstractController
             $this->addFlash('success', 'Trip created successfully!');
 
             // US-005 Acceptance Criteria 6: Redirect to the trip dashboard upon successful creation.
-            // @todo create dashboard route and redirect to it
             return $this->redirectToRoute('app_dashboard');
         }
 
@@ -70,6 +70,36 @@ class TripController extends AbstractController
 
         return $this->render('trip/list.html.twig', [
             'trips' => $trips,
+        ]);
+    }
+
+    /**
+     * FR-009: Displays the detailed Trip Summary page.
+     * FR-010: Displays the grand total cost and a list of all individual expenses.
+     */
+    #[Route('/{id}', name: 'app_trip_summary', methods: ['GET'])]
+    public function summary(Trip $trip, TripRepository $tripRepository): Response
+    {
+        // Security check: Ensure the current user owns this trip
+        if ($trip->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('You do not have permission to view this trip.');
+        }
+
+        // --- Calculation for FR-010 ---
+
+        // This calculation should ideally be moved to the TripRepository
+        // for better performance (a single SQL SUM query).
+        $grandTotal = 0;
+        foreach ($trip->getExpenses() as $expense) {
+            // Note: Expense amount is a string (Types::DECIMAL) and must be converted for math.
+            // Using bcmath or casting is necessary for accurate currency math in PHP.
+            $grandTotal += (float)$expense->getAmount();
+        }
+
+        return $this->render('trip/summary.html.twig', [
+            'trip' => $trip,
+            'grand_total' => $grandTotal,
+            'expense_count' => $trip->getExpenses()->count(),
         ]);
     }
 }

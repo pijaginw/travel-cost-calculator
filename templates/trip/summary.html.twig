@@ -1,0 +1,93 @@
+{# templates/trip/summary.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Summary: {{ trip.tripName }}{% endblock %}
+
+{% block body %}
+    <div class="app-content-panel">
+
+        <div class="data-header">
+            <h1>Trip Summary: {{ trip.tripName }}</h1>
+
+            {# Link to the Add Expense page (FR-007, US-007) #}
+            <a href="{{ path('app_expense_add', {'id': trip.id}) }}" class="button button-primary">
+                <i class="fa fa-plus-circle"></i> Add New Expense
+            </a>
+        </div>
+
+        {# FR-010: Display the grand total cost #}
+        <div class="mb-4" style="padding: 1.5rem; background-color: var(--color-bg); border-radius: var(--border-radius-main); border: 1px solid var(--color-border);">
+            <h2 style="font-size: 1.25rem; font-weight: 500; text-align: center; color: var(--color-text-secondary); margin-bottom: 0.5rem;">Grand Total Cost</h2>
+
+            <p style="font-size: 3rem; font-weight: 700; text-align: center; color: var(--color-accent); margin-bottom: 0.5rem;">
+                {{ grand_total|number_format(2, '.', ',') }} {{ trip.tripCurrency }}
+            </p>
+            <p class="text-muted text-center" style="font-size: 0.9rem; color: var(--color-text-secondary);">
+                (Total of {{ expense_count }} expenses logged)
+            </p>
+        </div>
+
+        {# FR-010: List of all individual expenses #}
+        <h3 class="mt-5 mb-3" style="font-size: 1.5rem; font-weight: 600;">Expense Details</h3>
+
+        {% if trip.expenses.count > 0 %}
+            <div class="table-container">
+                <table class="app-table">
+                    <thead>
+                    <tr>
+                        <th style="width: 5%;">#</th>
+                        <th style="width: 25%;">Amount ({{ trip.tripCurrency }})</th>
+                        <th style="width: 25%;">Category</th>
+                        <th style="width: 30%;">Date Added</th>
+                        <th class="table-col-actions">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {# Loop through expenses in reverse order and use the loop counter for position #}
+                    {% for expense in trip.expenses|reverse %}
+                        <tr>
+                            {# Use loop.revindex to display position number 1, 2, 3... #}
+                            <td class="table-col-date">{{ loop.revindex }}</td>
+                            <td class="table-col-main">{{ expense.amount|number_format(2, '.', ',') }}</td>
+                            {# Uses the value property of the PHP Enum for display #}
+                            <td>
+                                <span style="display: inline-block; padding: 0.3em 0.8em; border-radius: 4px; background-color: var(--color-secondary-button-bg); color: var(--color-text); font-size: 0.9rem; font-weight: 500;">
+                                    {{ expense.category.value }}
+                                </span>
+                            </td>
+                            <td class="table-col-date">{{ expense.createdAt|date('M j, Y H:i') }}</td>
+                            <td style="padding: 1rem; vertical-align: middle; display: flex; align-items: center; justify-content: flex-start; height: 100%;">
+                                {# US-010: Expense Deletion Form #}
+                                <form method="post"
+                                      action="{{ path('app_expense_delete', {'id': trip.id, 'expenseId': expense.id}) }}"
+                                      onsubmit="return confirm('Are you sure you want to permanently delete this expense?')"
+                                      style="margin: 0;"> {# Ensure no margin pushes it right #}
+
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ expense.id) }}">
+
+                                    <button type="submit"
+                                            title="Delete Expense"
+                                            style="background: none; border: none; padding: 0; cursor: pointer; color: #c53030; font-size: 1.2rem;">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="data-empty-state">
+                <p class="data-empty-text">There are no expenses logged for this trip yet.</p>
+                <p class="data-empty-text">Start by adding your first receipt!</p>
+            </div>
+        {% endif %}
+
+        <hr class="mt-5">
+        <a href="{{ path('app_dashboard') }}" class="button button-secondary">
+            ← Back to My Trips
+        </a>
+
+    </div>
+{% endblock %}
