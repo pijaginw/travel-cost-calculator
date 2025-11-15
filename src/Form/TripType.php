@@ -11,6 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @template TData of Trip
+ *
  * @extends AbstractType<TData>
  */
 class TripType extends AbstractType

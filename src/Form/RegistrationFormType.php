@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * @template TData of User
+ *
  * @extends AbstractType<TData>
  */
 class RegistrationFormType extends AbstractType

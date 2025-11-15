@@ -12,6 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @template TData of Expense
+ *
  * @extends AbstractType<TData>
  */
 class ExpenseType extends AbstractType

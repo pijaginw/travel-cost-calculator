@@ -30,7 +30,7 @@ class Expense
     #[Assert\Positive(message: 'Expense amount must be positive.')]
     private ?string $amount = null;
 
-    #[ORM\Column(enumType: ExpenseCategoryType::class, options: ['default' => 'Uncategorized'])]  // @phpstan-ignore-line
+    #[ORM\Column(enumType: ExpenseCategoryType::class, options: ['default' => 'Uncategorized'])] // @phpstan-ignore-line
     private ExpenseCategory $category = ExpenseCategory::Uncategorized;
 
     public function getId(): ?int
