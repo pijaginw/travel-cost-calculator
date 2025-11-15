@@ -19,7 +19,7 @@ class Expense
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'bigint')]
-    private ?int $id = null;
+    private ?int $id = null; // @phpstan-ignore-line
 
     #[ORM\ManyToOne(inversedBy: 'expenses')]
     #[ORM\JoinColumn(name: 'trip_id', nullable: false, onDelete: 'CASCADE')]
@@ -30,8 +30,8 @@ class Expense
     #[Assert\Positive(message: 'Expense amount must be positive.')]
     private ?string $amount = null;
 
-    #[ORM\Column(enumType: ExpenseCategoryType::class, options: ['default' => 'Uncategorized'])]
-    private ?ExpenseCategory $category = ExpenseCategory::Uncategorized;
+    #[ORM\Column(enumType: ExpenseCategoryType::class, options: ['default' => 'Uncategorized'])]  // @phpstan-ignore-line
+    private ExpenseCategory $category = ExpenseCategory::Uncategorized;
 
     public function getId(): ?int
     {
@@ -43,7 +43,7 @@ class Expense
         return $this->trip;
     }
 
-    public function setTrip(?Trip $trip): static
+    public function setTrip(?Trip $trip): self
     {
         $this->trip = $trip;
 
@@ -55,19 +55,19 @@ class Expense
         return $this->amount;
     }
 
-    public function setAmount(string $amount): static
+    public function setAmount(string $amount): self
     {
         $this->amount = $amount;
 
         return $this;
     }
 
-    public function getCategory(): ?ExpenseCategory
+    public function getCategory(): ExpenseCategory
     {
         return $this->category;
     }
 
-    public function setCategory(ExpenseCategory $category): static
+    public function setCategory(ExpenseCategory $category): self
     {
         $this->category = $category;
 

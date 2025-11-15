@@ -77,7 +77,7 @@ class ExpenseController extends AbstractController
                 // FR-015: Create a *new* expense instance pre-filled with AI data for user review
                 $reviewExpense = new Expense();
                 $reviewExpense->setTrip($trip);
-                $reviewExpense->setAmount($aiResult->getAmount());
+                $reviewExpense->setAmount((string) $aiResult->getAmount());
                 $reviewExpense->setCategory(ExpenseCategory::tryFrom($aiResult->getCategory()));
 
                 $entityManager->persist($reviewExpense);

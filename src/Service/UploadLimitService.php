@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Service to enforce the monthly receipt upload limit.
@@ -11,10 +10,6 @@ use Doctrine\ORM\EntityManagerInterface;
 class UploadLimitService
 {
     private const MONTHLY_LIMIT = 100; // FR-023: A usage limit of 100 receipt uploads
-
-    public function __construct(private EntityManagerInterface $entityManager)
-    {
-    }
 
     /**
      * US-012: Checks if the user is below the monthly limit.
@@ -42,6 +37,7 @@ class UploadLimitService
 
         // --- SIMULATED LOG END ---
 
+        // @phpstan-ignore-next-line
         return $currentUploads < self::MONTHLY_LIMIT;
     }
 

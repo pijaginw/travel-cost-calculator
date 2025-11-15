@@ -23,7 +23,7 @@ class UserMonthlyLimit
 
     #[ORM\Column]
     #[Assert\PositiveOrZero]
-    private ?int $uploadCount = 0;
+    private int $uploadCount = 0;
 
     public function getUser(): ?User
     {
@@ -49,7 +49,7 @@ class UserMonthlyLimit
         return $this;
     }
 
-    public function getUploadCount(): ?int
+    public function getUploadCount(): int
     {
         return $this->uploadCount;
     }
