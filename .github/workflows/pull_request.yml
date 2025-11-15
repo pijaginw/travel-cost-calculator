@@ -1,0 +1,79 @@
+name: Master Branch
+
+on:
+    push:
+        branches: [ "master" ]
+
+jobs:
+    build-and-test:
+        runs-on: ubuntu-latest
+
+        services:
+            postgres:
+                image: postgres:15-alpine
+                env:
+                    POSTGRES_DB: test_db
+                    POSTGRES_USER: runner
+                    POSTGRES_PASSWORD: password
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+
+        steps:
+            - name: ⚙️ Checkout Code
+              uses: actions/checkout@v4
+
+            - name: 🛠️ Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.2'
+                  extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql, dom, filter
+                  tools: composer:v2, php-cs-fixer
+                  coverage: none
+
+            - name: 📥 Get Composer Cache Directory
+              id: composer-cache
+              run: echo "dir=$(composer config cache-dir)" >> $GITHUB_OUTPUT
+
+            - name: 📦 Restore Composer Dependencies Cache
+              uses: actions/cache@v4
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: ${{ runner.os }}-composer-
+
+            - name: 📝 Install Composer Dependencies
+              run: composer install --prefer-dist --no-progress
+
+            - name: 📝 Prepare Symfony Environment
+              run: |
+                  # Create a basic .env.test file and set the DB connection string
+                  echo "DATABASE_URL=postgresql://runner:password@127.0.0.1:5432/test_db?server_version=15&charset=utf8" > .env.test
+                  # Set the test environment variable
+                  echo "APP_ENV=test" >> $GITHUB_ENV
+
+            # --- Code Quality Checks ---
+
+            - name: 🧹 Run PHP-CS-Fixer (Fix and Check)
+                # On the main branch, you often want to run the fix command without --dry-run
+                # to ensure the repository stays clean, but we will run dry-run here for safety
+                # unless a specific fix step is intended. Keeping the check for safety.
+              run: vendor/bin/php-cs-fixer fix --dry-run --stop-on-violation --diff
+
+            - name: 🔍 Run PHPStan Static Analysis
+              run: vendor/bin/phpstan analyse --no-progress --error-format=github
+
+            # --- Functional Tests ---
+
+            - name: 🗄️ Setup Database for Tests
+                # Use Symfony's console to create and migrate the database
+              run: |
+                  php bin/console doctrine:database:create --env=test --if-not-exists
+                  php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+            - name: ✅ Run PHPUnit Tests
+              run: vendor/bin/phpunit
