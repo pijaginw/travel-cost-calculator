@@ -11,7 +11,7 @@ class SecurityControllerTest extends WebTestCase
     // Test that anonymous users are redirected to log in
     public function testAnonymousUsersCannotAccessDashboard(): void
     {
-        $client = static::createClient([ 'environment' => 'test']);
+        $client = static::createClient(['environment' => 'test']);
         $client->request('GET', '/trip/list');
 
         $this->assertResponseRedirects('/login');
@@ -20,7 +20,7 @@ class SecurityControllerTest extends WebTestCase
     // Test that logged-in users can access the dashboard
     public function testLoggedInUserCanAccessDashboard(): void
     {
-        $client = static::createClient([ 'environment' => 'test']);
+        $client = static::createClient(['environment' => 'test']);
 
         /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get('doctrine')->getRepository(User::class);

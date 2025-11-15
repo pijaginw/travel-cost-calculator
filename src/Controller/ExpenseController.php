@@ -31,9 +31,9 @@ class ExpenseController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         ExpenseProcessorService $processor,
-        UploadLimitService $limitService
+        UploadLimitService $limitService,
     ): Response {
-        /** @var null|User $user */
+        /** @var User|null $user */
         $user = $this->getUser();
         $expense = new Expense();
         $expense->setTrip($trip);
@@ -46,16 +46,17 @@ class ExpenseController extends AbstractController
 
         // --- PATH B: FILE UPLOAD (AI Processing) ---
         if ($isUploadAttempt && $uploadedFile) {
-
             // FIX 1: Ensure CSRF token for the manually created upload form is valid
             if (!$this->isCsrfTokenValid('upload_receipt', $request->request->get('_csrf_token'))) {
                 $this->addFlash('danger', 'Invalid security token for upload.');
+
                 return $this->redirectToRoute('app_expense_add', ['id' => $trip->getId()]);
             }
 
             // FR-023 / US-012: Enforce Monthly Upload Limit
             if (!$limitService->canUserUploadReceipt($user)) {
                 $this->addFlash('danger', 'You have reached your monthly limit of 100 receipt uploads.');
+
                 return $this->redirectToRoute('app_trip_summary', ['id' => $trip->getId()]);
             }
 
@@ -63,6 +64,7 @@ class ExpenseController extends AbstractController
             $mimeType = $uploadedFile->getMimeType();
             if (!in_array($mimeType, ['image/jpeg', 'image/png'])) {
                 $this->addFlash('danger', 'Invalid file type. Only JPG and PNG are supported.');
+
                 return $this->redirectToRoute('app_expense_add', ['id' => $trip->getId()]);
             }
 
@@ -82,10 +84,9 @@ class ExpenseController extends AbstractController
                 $entityManager->flush();
 
                 return $this->redirectToRoute('app_expense_add', ['id' => $trip->getId()]);
-
             } catch (Exception $e) {
                 // FR-017, US-009, US-011: Handle AI failure or API unavailability
-                $this->addFlash('warning', 'AI service failed to extract data: ' . $e->getMessage() . '. Please enter the expense details manually.');
+                $this->addFlash('warning', 'AI service failed to extract data: '.$e->getMessage().'. Please enter the expense details manually.');
 
                 $form = $this->createForm(ExpenseType::class, $expense);
 
@@ -107,7 +108,7 @@ class ExpenseController extends AbstractController
             $entityManager->persist($expense);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Expense successfully added to ' . $trip->getTripName() . '!');
+            $this->addFlash('success', 'Expense successfully added to '.$trip->getTripName().'!');
 
             // FR-019: User remains on the "Add Expense" page
             return $this->redirectToRoute('app_expense_add', ['id' => $trip->getId()]);
@@ -131,7 +132,7 @@ class ExpenseController extends AbstractController
         Trip $trip,
         int $expenseId,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): Response {
         // Use $expenseId to fetch the specific Expense
         $expense = $entityManager->getRepository(Expense::class)->find($expenseId);
@@ -141,7 +142,7 @@ class ExpenseController extends AbstractController
         }
 
         // CSRF Token check is required for secure deletion (similar to US-010 confirmation)
-        if ($this->isCsrfTokenValid('delete' . $expense->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$expense->getId(), $request->request->get('_token'))) {
             // US-010: Confirming the action permanently removes the expense
             $entityManager->remove($expense);
             $entityManager->flush();

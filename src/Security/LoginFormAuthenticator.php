@@ -23,7 +23,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
-        private AuthenticationUtils $authenticationUtils
+        private AuthenticationUtils $authenticationUtils,
     ) {
     }
 

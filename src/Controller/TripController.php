@@ -25,11 +25,12 @@ class TripController extends AbstractController
         // FR-004: Associate the trip with the currently logged-in user.
         // We fetch the user object and set it on the trip.
         // This ensures the trip is owned by the user creating it.
-        /** @var null|User $user */
+        /** @var User|null $user */
         $user = $this->getUser();
         if (!$user) {
             // This should not happen due to #[IsGranted], but it's good practice.
             $this->addFlash('error', 'You must be logged in to create a trip.');
+
             return $this->redirectToRoute('app_login');
         }
         $trip->setUser($user);
@@ -59,10 +60,11 @@ class TripController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function list(): Response
     {
-        /** @var null|User $user */
+        /** @var User|null $user */
         $user = $this->getUser();
         if (!$user) {
             $this->addFlash('error', 'You must be logged in to view your trips.');
+
             return $this->redirectToRoute('app_login');
         }
 
@@ -93,7 +95,7 @@ class TripController extends AbstractController
         foreach ($trip->getExpenses() as $expense) {
             // Note: Expense amount is a string (Type::DECIMAL) and must be converted for math.
             // Using bcmath or casting is necessary for accurate currency math in PHP.
-            $grandTotal += (float)$expense->getAmount();
+            $grandTotal += (float) $expense->getAmount();
         }
 
         return $this->render('trip/summary.html.twig', [

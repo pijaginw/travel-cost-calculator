@@ -21,7 +21,7 @@ class TripType extends AbstractType
                 'label' => 'Trip Name',
                 'attr' => [
                     'placeholder' => 'e.g., Summer in Italy',
-                    'maxlength' => 70 // Corresponds to DB schema
+                    'maxlength' => 70, // Corresponds to DB schema
                 ],
             ])
             // FR-005: A trip requires a single currency.

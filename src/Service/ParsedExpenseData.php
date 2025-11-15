@@ -11,13 +11,14 @@ use InvalidArgumentException;
 class ParsedExpenseData
 {
     /**
-     * @param float $amount The total monetary amount extracted from the receipt.
-     * @param string $category The suggested expense category must be one of the predefined categories.
-     * @throws InvalidArgumentException If the category is invalid.
+     * @param float  $amount   the total monetary amount extracted from the receipt
+     * @param string $category the suggested expense category must be one of the predefined categories
+     *
+     * @throws InvalidArgumentException if the category is invalid
      */
     public function __construct(
         private float $amount,
-        private string $category
+        private string $category,
     ) {
         if (!in_array(ExpenseCategory::from($this->category), ExpenseCategory::cases(), true)) {
             throw new InvalidArgumentException('Invalid category provided.');

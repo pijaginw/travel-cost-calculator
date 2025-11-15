@@ -4,9 +4,9 @@ namespace App\Service;
 
 use App\Entity\ExpenseCategory;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Component\HttpClient\Exception\TransportException;
 use Throwable;
 
 /**
@@ -20,7 +20,7 @@ class ExpenseProcessorService
     public function __construct(
         HttpClientInterface $httpClient,
         #[Autowire('%env(OPENAI_API_KEY)%')]
-        string $openaiApiKey
+        string $openaiApiKey,
     ) {
         $this->httpClient = $httpClient;
         $this->openaiApiKey = $openaiApiKey;
@@ -29,9 +29,11 @@ class ExpenseProcessorService
     /**
      * Sends the uploaded receipt image to OpenAI for structured parsing.
      *
-     * @param UploadedFile $file The uploaded receipt file.
-     * @return ParsedExpenseData The extracted expense data.
-     * @throws OpenAIException If the API call fails or returns an invalid structure.
+     * @param UploadedFile $file the uploaded receipt file
+     *
+     * @return ParsedExpenseData the extracted expense data
+     *
+     * @throws OpenAIException if the API call fails or returns an invalid structure
      */
     public function processReceipt(UploadedFile $file): ParsedExpenseData
     {
@@ -39,7 +41,7 @@ class ExpenseProcessorService
             $base64Image = base64_encode(file_get_contents($file->getRealPath()));
             $mimeType = $file->getMimeType();
         } catch (Throwable $e) {
-            throw new OpenAIException('Failed to read file contents: ' . $e->getMessage());
+            throw new OpenAIException('Failed to read file contents: '.$e->getMessage());
         }
 
         $jsonStructure = json_encode([
@@ -78,7 +80,7 @@ class ExpenseProcessorService
         try {
             $response = $this->httpClient->request('POST', 'https://api.openai.com/v1/chat/completions', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $this->openaiApiKey,
+                    'Authorization' => 'Bearer '.$this->openaiApiKey,
                     'Content-Type' => 'application/json',
                 ],
                 'json' => $payload,
@@ -109,24 +111,23 @@ class ExpenseProcessorService
             }
 
             return new ParsedExpenseData(
-                (float)$parsedResult['amount'],
+                (float) $parsedResult['amount'],
                 $parsedResult['category']
             );
-
         } catch (TransportException $e) {
             // Handle network/timeout errors (FR-021)
-            throw new OpenAIException('Network error during OpenAI communication. Service may be unavailable: ' . $e->getMessage(), 0, $e);
+            throw new OpenAIException('Network error during OpenAI communication. Service may be unavailable: '.$e->getMessage(), 0, $e);
         } catch (Throwable $e) {
             // Catch any other errors (JSON decoding, DTO validation, etc.)
-            throw new OpenAIException('Failed to process API response: ' . $e->getMessage(), 0, $e);
+            throw new OpenAIException('Failed to process API response: '.$e->getMessage(), 0, $e);
         }
-//        finally {
-//            // NOTE: Per FR-022, the file is deleted immediately after extraction *and confirmation*.
-//            // Since this service only performs extraction, the deletion should ideally happen in the Controller
-//            // or a listener *after* the user confirms/saves the expense.
-//            // However, if the intent is to delete the temp file immediately after reading it, you would do it here,
-//            // but for safety (as UploadedFile handles the move/temp file lifetime), we leave it to Symfony's request cycle
-//            // or a dedicated file service to manage the original persistence/cleanup.
-//        }
+        //        finally {
+        //            // NOTE: Per FR-022, the file is deleted immediately after extraction *and confirmation*.
+        //            // Since this service only performs extraction, the deletion should ideally happen in the Controller
+        //            // or a listener *after* the user confirms/saves the expense.
+        //            // However, if the intent is to delete the temp file immediately after reading it, you would do it here,
+        //            // but for safety (as UploadedFile handles the move/temp file lifetime), we leave it to Symfony's request cycle
+        //            // or a dedicated file service to manage the original persistence/cleanup.
+        //        }
     }
 }

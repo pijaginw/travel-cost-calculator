@@ -17,7 +17,8 @@ final class Version20251019132733 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql("CREATE TYPE expense_category AS ENUM ('Transportation', 'Accomodation', 'Food & Drink', 'Activities', 'Uncategorized')");
-        $this->addSql('CREATE TABLE expenses (id BIGSERIAL NOT NULL, trip_id BIGINT NOT NULL, amount NUMERIC(10, 2) NOT NULL, category expense_category NOT NULL DEFAULT \'Uncategorized\', created_at TIMESTAMP(0) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, updated_at TIMESTAMP(0) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, PRIMARY KEY(id))');        $this->addSql('CREATE INDEX idx_expenses_trip_id ON expenses (trip_id)');
+        $this->addSql('CREATE TABLE expenses (id BIGSERIAL NOT NULL, trip_id BIGINT NOT NULL, amount NUMERIC(10, 2) NOT NULL, category expense_category NOT NULL DEFAULT \'Uncategorized\', created_at TIMESTAMP(0) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, updated_at TIMESTAMP(0) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_expenses_trip_id ON expenses (trip_id)');
         $this->addSql('ALTER TABLE expenses ADD CONSTRAINT chk_amount_positive CHECK (amount > 0)');
         $this->addSql('COMMENT ON COLUMN expenses.created_at IS \'(DC2Type:datetimetz_immutable)\'');
         $this->addSql('COMMENT ON COLUMN expenses.updated_at IS \'(DC2Type:datetimetz_immutable)\'');
