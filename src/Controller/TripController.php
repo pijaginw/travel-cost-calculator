@@ -91,7 +91,7 @@ class TripController extends AbstractController
         // for better performance (a single SQL SUM query).
         $grandTotal = 0;
         foreach ($trip->getExpenses() as $expense) {
-            // Note: Expense amount is a string (Types::DECIMAL) and must be converted for math.
+            // Note: Expense amount is a string (Type::DECIMAL) and must be converted for math.
             // Using bcmath or casting is necessary for accurate currency math in PHP.
             $grandTotal += (float)$expense->getAmount();
         }

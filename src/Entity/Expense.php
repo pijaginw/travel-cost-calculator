@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Doctrine\Type\ExpenseCategoryType;
 use App\Repository\ExpenseRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -29,7 +30,7 @@ class Expense
     #[Assert\Positive(message: 'Expense amount must be positive.')]
     private ?string $amount = null;
 
-    #[ORM\Column(type: 'string', enumType: ExpenseCategory::class, options: ['default' => 'Uncategorized'])]
+    #[ORM\Column(enumType: ExpenseCategoryType::class, options: ['default' => 'Uncategorized'])]
     private ?ExpenseCategory $category = ExpenseCategory::Uncategorized;
 
     public function getId(): ?int
