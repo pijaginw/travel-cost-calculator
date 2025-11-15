@@ -1,4 +1,4 @@
-{# templates/expense/add.html.twig - Final Cleaned and Styled Version #}
+{# templates/expense/add.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Add Expense to {{ trip.tripName }}{% endblock %}
@@ -9,45 +9,62 @@
         <div class="form-container">
 
             <h1 class="form-title">Add New Expense</h1>
-            {# Removed markdown ** from here #}
             <p class="form-subtitle">to {{ trip.tripName }}</p>
 
-            {# Form for initial file upload (Step 1) #}
-            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+            {# Display flash messages (Warnings/Errors from Controller) #}
+            {% for message in app.flashes('danger') %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+            {% for message in app.flashes('warning') %}
+                <div class="alert alert-warning">{{ message }}</div>
+            {% endfor %}
 
-            {# --- 1. Upload Section --- #}
-            <h2 style="font-size: 1.25rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-accent);">1. Upload Receipt</h2>
-            <p class="text-muted mb-4">Upload a JPG or PNG receipt for automatic processing.</p>
+            {# Form for initial file upload (Step 1) - Note: This is an HTML form for file upload #}
+            {# The action uses the same route, but the controller differentiates the submission by the button name 'upload_submit' #}
+            <form method="POST" action="{{ path('app_expense_add', {'id': trip.id}) }}" enctype="multipart/form-data">
 
-            <div class="form-group">
-                <label for="receipt_image">Receipt Image</label>
-                {# Using form-control for file input style #}
-                <input type="file" id="receipt_image" name="receipt_image" accept="image/jpeg,image/png" class="form-control">
-            </div>
+                {# Manually include the CSRF token for this custom form (required for security) #}
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('upload_receipt') }}">
 
-            <button type="submit" class="button button-primary button-full-width mt-3">
-                <i class="fa fa-upload"></i> Upload and Process
-            </button>
+                {# --- 1. Upload Section --- #}
+                <h2 style="font-size: 1.25rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-accent);">1. Upload Receipt</h2>
+                <p class="text-muted mb-4">Upload a JPG or PNG receipt for automatic processing.</p>
 
+                <div class="form-group">
+                    <label for="receipt_image">Receipt Image</label>
+                    <input type="file" id="receipt_image" name="receipt_image" accept="image/jpeg,image/png" class="form-control" required>
+                </div>
 
-            {% if form.vars.value.amount is not null or form.vars.value.category is not null %}
-                {# --- 2. Manual Entry Section --- #}
+                <button type="submit" name="upload_submit" class="button button-primary button-full-width mt-3">
+                    <i class="fa fa-upload"></i> Upload and Process
+                </button>
+            </form>
+
+            {# --- 2. Manual Entry Section (Conditionally displayed) --- #}
+
+            {# CRITICAL FIX: The logic now relies on the 'show_manual_entry' variable passed from the controller,
+           which is TRUE if the AI service fails. #}
+            {% if show_manual_entry %}
+
                 {# Clear visual separation with a divider #}
                 <div style="border-top: 1px solid var(--color-border); padding-top: 2.5rem; margin-top: 3rem;">
 
                     <h2 style="font-size: 1.25rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-accent);">2. Manually Enter Details</h2>
                     <p class="text-muted mb-4">The receipt image could not be processed, or you are entering the expense directly.</p>
 
+                    {# The Symfony form wrapper starts here for the manual fields #}
+                    {{ form_start(form) }}
+
                     {# FR-017, US-009: Form fields for manual entry #}
 
-                    {# 1. Amount Field - Applied .form-control for better styling and increased spacing #}
+                    {# 1. Amount Field #}
                     <div class="form-group" style="margin-bottom: 2rem;">
                         {{ form_label(form.amount) }}
                         {{ form_widget(form.amount, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(form.amount) }}
                     </div>
 
-                    {# 2. Category Field - Applied .form-control for better styling and increased spacing #}
+                    {# 2. Category Field #}
                     <div class="form-group" style="margin-bottom: 2rem;">
                         {{ form_label(form.category) }}
                         {{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
@@ -55,13 +72,12 @@
                     </div>
 
                     <div class="form-actions">
-                        {# CHANGE: Changed to button-primary to ensure it looks active and is not grayed out #}
                         <button type="submit" class="button button-warning button-full-width">Save Manually</button>
                     </div>
+
+                    {{ form_end(form) }}
                 </div>
             {% endif %}
-
-            {{ form_end(form) }}
 
             <div class="form-footer-link">
                 <a href="{{ path('app_trip_summary', {'id': trip.id}) }}">
@@ -71,4 +87,6 @@
 
         </div> {# End form-container #}
     </div>
+
+
 {% endblock %}

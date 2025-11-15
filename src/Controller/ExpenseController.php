@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Expense;
+use App\Entity\ExpenseCategory;
 use App\Entity\Trip;
 use App\Entity\User;
 use App\Form\ExpenseType;
@@ -32,32 +33,27 @@ class ExpenseController extends AbstractController
         ExpenseProcessorService $processor,
         UploadLimitService $limitService
     ): Response {
-        // Step 1: Initialize the Expense object and the Form.
+        /** @var null|User $user */
+        $user = $this->getUser();
         $expense = new Expense();
         $expense->setTrip($trip);
+        // This form is used for manual entry (PATH C) and the final review/save (PATH A)
         $form = $this->createForm(ExpenseType::class, $expense);
 
-        $form->handleRequest($request);
+        // --- 1. Detect File Upload Action (From the manually built form in Twig) ---
         $uploadedFile = $request->files->get('receipt_image');
-
-        // --- PATH A: FINAL EXPENSE SAVE (Manual or Review Correction) ---
-        if ($form->isSubmitted() && $form->isValid()) {
-            // FR-016, US-008, US-009: Save the corrected/manually entered expense
-            $entityManager->persist($expense);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Expense successfully added to ' . $trip->getTripName() . '!');
-
-            // FR-019: User remains on the "Add Expense" page
-            return $this->redirectToRoute('app_expense_add', ['id' => $trip->getId()]);
-        }
+        $isUploadAttempt = $request->request->has('upload_submit'); // Check for the submit button name
 
         // --- PATH B: FILE UPLOAD (AI Processing) ---
-        // Only run this if it's a POST request AND a file is present.
-        if ($request->isMethod('POST') && $uploadedFile) {
+        if ($isUploadAttempt && $uploadedFile) {
+
+            // FIX 1: Ensure CSRF token for the manually created upload form is valid
+            if (!$this->isCsrfTokenValid('upload_receipt', $request->request->get('_csrf_token'))) {
+                $this->addFlash('danger', 'Invalid security token for upload.');
+                return $this->redirectToRoute('app_expense_add', ['id' => $trip->getId()]);
+            }
+
             // FR-023 / US-012: Enforce Monthly Upload Limit
-            /** @var null|User $user */
-            $user = $this->getUser();
             if (!$limitService->canUserUploadReceipt($user)) {
                 $this->addFlash('danger', 'You have reached your monthly limit of 100 receipt uploads.');
                 return $this->redirectToRoute('app_trip_summary', ['id' => $trip->getId()]);
@@ -74,33 +70,55 @@ class ExpenseController extends AbstractController
                 // FR-012, FR-013: AI Service processes the image
                 $aiResult = $processor->processReceipt($uploadedFile);
 
-                // FR-022: Delete the file immediately after successful extraction (simulated)
+                // FR-022: File cleanup logic would happen after the user confirms/saves.
 
-                // FR-015: Create a *new* form instance pre-filled with AI data for user review
+                // FR-015: Create a *new* expense instance pre-filled with AI data for user review
                 $reviewExpense = new Expense();
                 $reviewExpense->setTrip($trip);
-                $reviewExpense->setAmount($aiResult['amount']);
-                $reviewExpense->setCategory($aiResult['category']);
+                $reviewExpense->setAmount($aiResult->getAmount());
+                $reviewExpense->setCategory(ExpenseCategory::tryFrom($aiResult->getCategory()));
 
-                $reviewForm = $this->createForm(ExpenseType::class, $reviewExpense);
+                $entityManager->persist($reviewExpense);
+                $entityManager->flush();
 
-                return $this->render('expense/review.html.twig', [
-                    'trip' => $trip,
-                    'form' => $reviewForm->createView(),
-                ]);
+                return $this->redirectToRoute('app_expense_add', ['id' => $trip->getId()]);
 
             } catch (Exception $e) {
                 // FR-017, US-009, US-011: Handle AI failure or API unavailability
                 $this->addFlash('warning', 'AI service failed to extract data: ' . $e->getMessage() . '. Please enter the expense details manually.');
 
-                // Fall-through to the final render block (Step C) for manual entry
+                $form = $this->createForm(ExpenseType::class, $expense);
+
+                return $this->render('expense/add.html.twig', [
+                    'trip' => $trip,
+                    'form' => $form->createView(),
+                    'show_manual_entry' => true, // <-- Add this new variable
+                ]);
             }
         }
 
+        // --- 2. Handle Manual Expense Save (From the Symfony Form) ---
+        // This block handles the submission of the second form in add.html.twig OR the submission from the review form.
+        $form->handleRequest($request);
+
+        // --- PATH A: FINAL EXPENSE SAVE (Manual or Review Correction) ---
+        if ($form->isSubmitted() && $form->isValid()) {
+            // FR-016, US-008, US-009: Save the corrected/manually entered expense
+            $entityManager->persist($expense);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Expense successfully added to ' . $trip->getTripName() . '!');
+
+            // FR-019: User remains on the "Add Expense" page
+            return $this->redirectToRoute('app_expense_add', ['id' => $trip->getId()]);
+        }
+
         // --- PATH C: INITIAL LOAD (GET) OR FALLBACK TO MANUAL ENTRY ---
+        // This is the fallback for GET requests. Note: Manual entry fallback is now handled in the catch block.
         return $this->render('expense/add.html.twig', [
             'trip' => $trip,
             'form' => $form->createView(),
+            'show_manual_entry' => false,
         ]);
     }
 
