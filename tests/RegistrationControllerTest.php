@@ -1,9 +1,9 @@
 <?php
+
 namespace App\Tests;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -14,7 +14,7 @@ class RegistrationControllerTest extends WebTestCase
 
     protected function setUp(): void
     {
-        $this->client = static::createClient();
+        $this->client = static::createClient(['environment' => 'test']);
 
         // Ensure we have a clean database
         $container = static::getContainer();
@@ -40,11 +40,10 @@ class RegistrationControllerTest extends WebTestCase
         $this->client->submitForm('Register', [
             'registration_form[email]' => 'me@example.com',
             'registration_form[plainPassword]' => 'password',
-            'registration_form[agreeTerms]' => true,
         ]);
 
-        // Ensure the response redirects after submitting the form, the user exists, and is not verified
-        // self::assertResponseRedirects('/'); @TODO: set the appropriate path that the user is redirected to.
+        // Ensure the response redirects after submitting the form, the user exists and is not verified
+        self::assertResponseRedirects('/');
         self::assertCount(1, $this->userRepository->findAll());
     }
 }
