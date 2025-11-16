@@ -104,4 +104,24 @@ class TripController extends AbstractController
             'expense_count' => $trip->getExpenses()->count(),
         ]);
     }
+
+    #[Route('/{id}', name: 'app_trip_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function delete(Request $request, Trip $trip, EntityManagerInterface $entityManager): Response
+    {
+        if ($trip->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('You do not have permission to delete this trip.');
+        }
+
+        if ($this->isCsrfTokenValid('delete'.$trip->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($trip);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Trip successfully deleted.');
+        } else {
+            $this->addFlash('error', 'Invalid security token for deletion.');
+        }
+
+        return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);
+    }
 }
