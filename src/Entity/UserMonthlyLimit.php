@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserMonthlyLimitRepository::class)]
 #[ORM\Table(name: 'user_monthly_limits')]
+#[ORM\UniqueConstraint(name: 'user_month_unique', columns: ['user_id', 'usage_month'])]
 class UserMonthlyLimit
 {
     #[ORM\Id]
@@ -17,7 +18,6 @@ class UserMonthlyLimit
     #[ORM\JoinColumn(name: 'user_id', nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
-    #[ORM\Id]
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?DateTimeImmutable $usageMonth = null;
 
