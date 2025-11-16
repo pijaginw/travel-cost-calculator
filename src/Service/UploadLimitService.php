@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Repository\UserMonthlyLimitRepository;
+use Exception;
 
 /**
  * Service to enforce the monthly receipt upload limit.
@@ -11,42 +13,29 @@ class UploadLimitService
 {
     private const MONTHLY_LIMIT = 100; // FR-023: A usage limit of 100 receipt uploads
 
+    public function __construct(private readonly UserMonthlyLimitRepository $userMonthlyLimitRepository)
+    {
+    }
+
     /**
      * US-012: Checks if the user is below the monthly limit.
+     *
+     * @throws Exception
      */
     public function canUserUploadReceipt(User $user): bool
     {
-        // --- SIMULATED LOGIC START ---
+        $limit = $this->userMonthlyLimitRepository->getCurrentMonthUploadCount($user);
 
-        // In a real application, this would query the database for successful uploads
-        // by the user in the current calendar month.
-
-        // Example DQL (not runnable here, just conceptual):
-        /*
-        $count = $this->entityManager->createQuery(
-            'SELECT COUNT(e.id) FROM App\Entity\Expense e
-             JOIN e.trip t
-             WHERE t.user = :user AND e.createdAt >= :firstDayOfMonth'
-        )
-        ->setParameter('user', $user)
-        ->setParameter('firstDayOfMonth', new \DateTime('first day of this month'))
-        ->getSingleScalarResult();
-        */
-
-        $currentUploads = 5; // Placeholder for a real count
-
-        // --- SIMULATED LOG END ---
-
-        // @phpstan-ignore-next-line
-        return $currentUploads < self::MONTHLY_LIMIT;
+        return $limit < self::MONTHLY_LIMIT;
     }
 
     /**
      * Increments the user's upload count upon successful save (US-007 acceptance).
+     *
+     * @throws Exception
      */
     public function incrementUploadCount(User $user): void
     {
-        // Logic to increment the persistent upload counter for the month.
-        // This is crucial for enforcing the limit in subsequent checks.
+        $this->userMonthlyLimitRepository->incrementUploadCount($user);
     }
 }

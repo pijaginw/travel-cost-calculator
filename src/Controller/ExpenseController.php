@@ -83,6 +83,8 @@ class ExpenseController extends AbstractController
                 $entityManager->persist($reviewExpense);
                 $entityManager->flush();
 
+                $limitService->incrementUploadCount($user);
+
                 return $this->redirectToRoute('app_expense_add', ['id' => $trip->getId()]);
             } catch (Exception $e) {
                 // FR-017, US-009, US-011: Handle AI failure or API unavailability

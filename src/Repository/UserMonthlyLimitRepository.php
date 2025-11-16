@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\UserMonthlyLimit;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 
@@ -55,7 +56,7 @@ class UserMonthlyLimitRepository extends ServiceEntityRepository
             ->andWhere('uml.user = :user')
             ->andWhere('uml.usageMonth = :month')
             ->setParameter('user', $user)
-            ->setParameter('month', $normalizedMonth)
+            ->setParameter('month', $normalizedMonth, Types::DATE_IMMUTABLE)
             ->getQuery()
             ->getOneOrNullResult();
     }
@@ -94,9 +95,11 @@ class UserMonthlyLimitRepository extends ServiceEntityRepository
      *
      * @throws Exception
      */
-    public function incrementUploadCount(User $user, DateTimeImmutable $month, int $increment = 1): UserMonthlyLimit
+    public function incrementUploadCount(User $user, int $increment = 1): UserMonthlyLimit
     {
-        $limit = $this->findOrCreate($user, $month);
+        $currentMonth = new DateTimeImmutable('first day of this month');
+
+        $limit = $this->findOrCreate($user, $currentMonth);
         $limit->setUploadCount($limit->getUploadCount() + $increment);
 
         $this->save($limit, true);

@@ -55,9 +55,12 @@
                                     <a href="{{ path('app_trip_summary', {'id': trip.id}) }}" class="button button-icon" title="View">
                                         👁️
                                     </a>
-                                    <a href="#" class="button button-icon button-icon-danger" title="Delete" onclick="return confirm('Are you sure you want to delete this trip?')">
-                                        🗑️
-                                    </a>
+                                    <form method="POST" action="{{ path('app_trip_delete', {'id': trip.id}) }}" style="display: inline-block" onsubmit="return confirm('Are you absolutely sure you want to delete this trip and all associated expenses?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trip.id) }}">
+                                        <button type="submit" class="button button-icon-delete button-icon-danger delete-button-reset" title="Delete">
+                                            🗑️
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
