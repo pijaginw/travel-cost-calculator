@@ -91,21 +91,72 @@ You will need the following software installed on your system:
 
     The application will be available at `https://127.0.0.1:8000`.
 
------
+## Getting Started Locally with Docker 🐳
 
-## Available Scripts
+To run the application using **Docker**, which bypasses the need to install **PHP**, **Composer**, and **PostgreSQL** locally, follow these alternative steps. This method uses the provided `docker-compose.yml` file to set up all necessary services (PHP-FPM, Nginx, and PostgreSQL).
 
-The following scripts are available for common development tasks.
+### Prerequisites (Docker Method)
 
-  * **Run the local development server:**
+You will need the following software installed on your system:
+
+* **[Docker](https://www.docker.com/products/docker-desktop)**
+* **[Docker Compose](https://docs.docker.com/compose/install/)** (often included with Docker Desktop)
+
+### Installation (Docker Method)
+
+1.  **Clone the repository:**
+
     ```bash
-    symfony server:start
+    git clone https://github.com/your-username/travel-cost-calculator.git
+    cd travel-cost-calculator
     ```
-  * **Run the test suite:**
-    Execute the project's PHPUnit tests to ensure code quality and functionality.
+
+2.  **Configure environment variables:**
+    Create a local environment file by copying the example. You will need to fill in your **OpenAI API key**.
+
     ```bash
-    php bin/phpunit
+    cp .env .env.local
     ```
+
+    Open `.env.local` and configure the following variable:
+
+    ```env
+    # .env.local
+    OPENAI_API_KEY="your-openai-api-key-here"
+    ```
+
+    > **Note:** The `docker-compose.yml` file automatically uses `app` for the database name, user, and password, which must be consistent with the `DATABASE_URL` setting in your `.env` and `.env.local` files.
+
+3.  **Build and Run the containers:**
+    The first time you run this, it will build the custom `php` service image and download the `nginx` and `postgres` images.
+
+    ```bash
+    docker compose up --build -d
+    ```
+
+4.  **Set up the database:**
+    Once the containers are running, you must execute the database setup commands *inside* the running **PHP container** (`symfony_php`).
+
+    ```bash
+    # Run the database creation command inside the PHP container
+    docker exec symfony_php php bin/console doctrine:database:create
+
+    # Run the migrations command inside the PHP container
+    docker exec symfony_php php bin/console doctrine:migrations:migrate --no-interaction
+    ```
+
+5.  **Access the application:**
+    The Nginx service is configured to expose the application on port **8080** of your host machine.
+
+    The application will be available at `http://localhost:8080`.
+
+### Stopping Docker
+
+To stop and remove the containers, use the following command:
+
+```bash
+docker compose down
+```
 
 -----
 
